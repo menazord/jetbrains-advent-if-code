@@ -3,23 +3,26 @@ package day01
 import readInput
 
 fun main() {
-
-    // how many readings so far
-    // what's the last reading
-    var lastReading = 0;
-    // and how many of them where increases (from the previous reading)
+    // how many of them where increases (from the previous reading)
     var increases = 0;
     // The list of readings (input)
     val readings = readInput("day01/input")
-
-    for ((count, reading) in readings.withIndex()) {
-        // Ignore the first reading as increment, just store it
-        if (count > 0) {
-            if (lastReading < reading.toInt()) {
-                increases++;
-            }
-        }
-        lastReading = reading.toInt()
+    val allReadings = ArrayList<Int>()
+    for (reading in readings) {
+        allReadings.add(reading.toInt())
     }
-    print("Got".plus(" ").plus(increases).plus(" increases"))
+
+    // Challenge #1
+    // Single measure increases
+    increases = allReadings
+        .zipWithNext()
+        .count { (prev, next) -> next > prev }
+    println("Got".plus(" ").plus(increases).plus(" increases"))
+
+    // Challenge #2
+    // 3 measurement window increases
+    increases = allReadings.windowed(3) { it.sum() }
+        .zipWithNext()
+        .count { (prev, next) -> next > prev }
+    println("Got".plus(" ").plus(increases).plus(" 3-reading increases"))
 }
